@@ -15,7 +15,7 @@
 
     function toggleButtonStatus(elem) {
         const status = getStatus(elem);
-        const nextStatus = STATUSES[STATUSES.indexOf(status) + (1 % STATUSES.length)];
+        const nextStatus = STATUSES[(STATUSES.indexOf(status) + 1) % STATUSES.length];
 
         if (status == NONE) elem.classList.add(nextStatus);
         else if (nextStatus == NONE) elem.classList.remove(status);
