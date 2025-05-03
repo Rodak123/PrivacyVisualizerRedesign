@@ -6,24 +6,53 @@
 
     const STATUSES = [NONE, NOT_LINKED, LINKED, TRACKING];
 
-    function getStatus(elem) {
-        for (const status of STATUSES) if (elem.classList.contains(status)) return status;
-        return NONE;
-    }
-
     const categories = document.getElementsByClassName('category');
 
-    function toggleButtonStatus(elem) {
-        const status = getStatus(elem);
-        const nextStatus = STATUSES[(STATUSES.indexOf(status) + 1) % STATUSES.length];
+    const urlParams = new URLSearchParams(window.location.search);
 
-        if (status == NONE) elem.classList.add(nextStatus);
-        else if (nextStatus == NONE) elem.classList.remove(status);
-        else elem.classList.replace(status, nextStatus);
+    function getStatusIndex(elem) {
+        if (urlParams.has(elem.id)) {
+            return urlParams.get(elem.id);
+        }
+        return 0;
     }
 
-    for (const elem of categories)
-        elem.getElementsByClassName('card-img-top')[0].addEventListener('click', () =>
-            toggleButtonStatus(elem)
-        );
+    function addButtonStatus(elem, statusIndex) {
+        const status = STATUSES[statusIndex];
+        elem.classList.add(nextStatus);
+    }
+
+    function toggleButtonStatus(elem) {
+        const statusIndex = getStatusIndex(elem);
+        const status = STATUSES[statusIndex];
+        const nextStatusIndex = (statusIndex + 1) % STATUSES.length;
+        const nextStatus = STATUSES[nextStatusIndex];
+
+        if (status == NONE) {
+            elem.classList.add(nextStatus);
+            urlParams.set(elem.id, nextStatusIndex);
+        }
+        else if (nextStatus == NONE) {
+            elem.classList.remove(status);
+            urlParams.delete(elem.id);
+        } 
+        else {
+            elem.classList.replace(status, nextStatus);
+            urlParams.set(elem.id, nextStatusIndex);
+        }
+
+        window.location.search = urlParams.toString();
+    }
+    
+    for (const elem of categories) {
+        const button = elem.getElementsByClassName('card-img-top')[0];
+        if (urlParams.has(button.id)) {
+            addButtonStatus(button, urlParams.get(button.id));
+        }
+        if (!urlParams.has('locked')) {
+            button.addEventListener('click', () =>
+                toggleButtonStatus(elem)
+            );
+        }
+    }
 })();
