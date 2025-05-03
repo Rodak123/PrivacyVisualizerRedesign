@@ -29,7 +29,6 @@
         const nextStatus = STATUSES[nextStatusIndex];
 
         if (nextStatus == NONE) {
-            elem.classList.remove(status);
             urlParams.delete(elem.id);
         } 
         else {
@@ -42,11 +41,11 @@
     for (const elem of categories) {
         const button = elem.getElementsByClassName('card-img-top')[0];
         if (urlParams.has(button.id)) {
-            addButtonStatus(button, urlParams.get(button.id));
+            addButtonStatus(elem, urlParams.get(button.id));
         }
         if (!urlParams.has('locked')) {
             button.addEventListener('click', () =>
-                toggleButtonStatus(elem)
+                toggleButtonStatus(button)
             );
         }
     }
