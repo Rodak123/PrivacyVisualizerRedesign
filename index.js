@@ -8,7 +8,7 @@
 
     const categories = document.getElementsByClassName('category');
 
-    const urlParams = new URLSearchParams(window.location.search);
+    let urlParams = new URLSearchParams(window.location.search);
 
     function getStatusIndex(elem) {
         if (urlParams.has(elem.id)) {
@@ -17,9 +17,16 @@
         return 0;
     }
 
-    function addButtonStatus(elem, statusIndex) {
-        const status = STATUSES[statusIndex];
-        elem.classList.add(status);
+    function updateCategoryStatus(elem, prevStatus, nextStatus) {
+        if (prevStatus == NONE) {    
+            elem.classList.add(nextStatus);
+        } 
+        else if (nextStatus == NONE) {
+            elem.classList.remove(prevStatus);
+        }
+        else {
+            elem.classList.replace(prevStatus, nextStatus);
+        }
     }
 
     function toggleButtonStatus(elem) {
@@ -35,18 +42,39 @@
             urlParams.set(elem.id, nextStatusIndex);
         }
 
-        window.location.search = urlParams.toString();
+        return [status, nextStatus];
+    }
+
+    function displayContent() {
+        for (const elem of categories) {
+            const button = elem.getElementsByClassName('card-img-top')[0];
+            if (urlParams.has(button.id)) {
+                addButtonStatus(elem, urlParams.get(button.id));
+            }
+            if (!urlParams.has('locked')) {
+                button.addEventListener('click', () => {
+                        const [prevStatus, nextStatus] = toggleButtonStatus(button);
+                        updateCategoryStatus(elem, prevStatus, nextStatus);
+                        const searchString = '?' + urlParams.toString();
+                        const href = window.location.origin + window.location.pathname + searchString;
+                        window.history.pushState({ searchString: searchString }, "", href);
+                    }
+                );
+            }
+        }
     }
     
-    for (const elem of categories) {
-        const button = elem.getElementsByClassName('card-img-top')[0];
-        if (urlParams.has(button.id)) {
-            addButtonStatus(elem, urlParams.get(button.id));
-        }
-        if (!urlParams.has('locked')) {
-            button.addEventListener('click', () =>
-                toggleButtonStatus(button)
-            );
-        }
-    }
+    // Handle forward/back buttons
+    window.addEventListener("popstate", (event) => {
+      // If a state has been provided, we have a "simulated" page
+      // and we update the current page.
+      if (event.state) {
+        // Simulate the loading of the previous page
+        urlParams = new URLSearchParams(event.state.searchString);
+        displayContent();
+      }
+    });
+
+
+    displayContent();
 })();
