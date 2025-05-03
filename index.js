@@ -12,7 +12,7 @@
 
     function getStatusIndex(elem) {
         if (urlParams.has(elem.id)) {
-            return urlParams.get(elem.id);
+            return Number(urlParams.get(elem.id));
         }
         return 0;
     }
