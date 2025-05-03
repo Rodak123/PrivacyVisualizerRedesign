@@ -28,16 +28,11 @@
         const nextStatusIndex = (statusIndex + 1) % STATUSES.length;
         const nextStatus = STATUSES[nextStatusIndex];
 
-        if (status == NONE) {
-            elem.classList.add(nextStatus);
-            urlParams.set(elem.id, nextStatusIndex);
-        }
-        else if (nextStatus == NONE) {
+        if (nextStatus == NONE) {
             elem.classList.remove(status);
             urlParams.delete(elem.id);
         } 
         else {
-            elem.classList.replace(status, nextStatus);
             urlParams.set(elem.id, nextStatusIndex);
         }
 
