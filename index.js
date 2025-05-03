@@ -49,7 +49,8 @@
         for (const elem of categories) {
             const button = elem.getElementsByClassName('card-img-top')[0];
             if (urlParams.has(button.id)) {
-                addButtonStatus(elem, urlParams.get(button.id));
+                const status = STATUSES[urlParams.get(button.id)];
+                elem.classList.add(status);
             }
             if (!urlParams.has('locked')) {
                 button.addEventListener('click', () => {
