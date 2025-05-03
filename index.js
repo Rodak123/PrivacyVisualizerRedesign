@@ -19,7 +19,7 @@
 
     function addButtonStatus(elem, statusIndex) {
         const status = STATUSES[statusIndex];
-        elem.classList.add(nextStatus);
+        elem.classList.add(status);
     }
 
     function toggleButtonStatus(elem) {
